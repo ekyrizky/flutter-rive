@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rive/rive.dart';
+import 'package:flutter_rive/models/tab_item.dart';
+import 'package:rive/rive.dart' hide LinearGradient;
 
 class CustomTabBar extends StatefulWidget {
   const CustomTabBar({super.key});
@@ -9,35 +10,54 @@ class CustomTabBar extends StatefulWidget {
 }
 
 class _CustomTabBarState extends State<CustomTabBar> {
-  SMIBool? status;
+  final List<TabItem> _icons = TabItem.tabItems;
 
-  void _onInitRiveIcon(Artboard artboard) {
-    final controller =
-        StateMachineController.fromArtboard(artboard, "SEARCH_Interactivity");
+  void _onInitRiveIcon(Artboard artboard, index) {
+    final controller = StateMachineController.fromArtboard(
+        artboard, _icons[index].stateMachine);
     artboard.addController(controller!);
-    status = controller.findInput<bool>("active") as SMIBool;
+    _icons[index].status = controller.findInput<bool>("active") as SMIBool;
   }
 
-  void onTabPress() {
-    status?.change(true);
-    Future.delayed(Duration(seconds: 6), () {
-      status?.change(false);
+  void onTabPress(int index) {
+    _icons[index].status?.change(true);
+    Future.delayed(Duration(seconds: 2), () {
+      _icons[index].status?.change(false);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(color: Colors.red),
-      child: MaterialButton(
-        child: RiveAnimation.asset(
-          'assets/rive/icons.riv',
-          stateMachines: ["SEARCH_Interactivity"],
-          artboard: "SEARCH",
-          onInit: _onInitRiveIcon,
-        ),
-        onPressed: onTabPress,
-      ),
+    return SafeArea(
+      child: Container(
+          margin: EdgeInsets.fromLTRB(16, 0, 16, 8),
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.7),
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Row(
+            children: List.generate(_icons.length, (index) {
+              TabItem icon = _icons[index];
+              return MaterialButton(
+                padding: EdgeInsets.all(12),
+                child: SizedBox(
+                  height: 36,
+                  width: 36,
+                  child: RiveAnimation.asset(
+                    'assets/rive/icons.riv',
+                    stateMachines: [icon.stateMachine],
+                    artboard: icon.artboart,
+                    onInit: (artboard) {
+                      _onInitRiveIcon(artboard, index);
+                    },
+                  ),
+                ),
+                onPressed: () {
+                  onTabPress(index);
+                },
+              );
+            }),
+          )),
     );
   }
 }
