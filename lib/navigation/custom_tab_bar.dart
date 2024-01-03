@@ -3,7 +3,9 @@ import 'package:flutter_rive/models/tab_item.dart';
 import 'package:rive/rive.dart' hide LinearGradient;
 
 class CustomTabBar extends StatefulWidget {
-  const CustomTabBar({super.key});
+  const CustomTabBar({super.key, required this.onTabChange});
+
+  final Function(int tabIndex) onTabChange;
 
   @override
   State<CustomTabBar> createState() => _CustomTabBarState();
@@ -26,6 +28,7 @@ class _CustomTabBarState extends State<CustomTabBar> {
       setState(() {
         _selectedTab = index;
       });
+      widget.onTabChange(index);
 
       _icons[index].status?.change(true);
       Future.delayed(Duration(seconds: 1), () {
