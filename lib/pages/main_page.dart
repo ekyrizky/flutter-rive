@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rive/navigation/custom_tab_bar.dart';
+import 'package:flutter_rive/navigation/side_menu.dart';
 import 'package:flutter_rive/pages/custom_page.dart';
 
 class MainPage extends StatefulWidget {
@@ -29,14 +29,17 @@ class _HomePageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      body: _tabBody,
-      bottomNavigationBar: CustomTabBar(
-        onTabChange: (tabIndex) {
-          setState(() {
-            _tabBody = _screens[tabIndex];
-          });
-        },
-      ),
+      body: Stack(children: [
+        SideMenu(),
+        // _tabBody,
+      ]),
+      // bottomNavigationBar: CustomTabBar(
+      //   onTabChange: (tabIndex) {
+      //     setState(() {
+      //       _tabBody = _screens[tabIndex];
+      //     });
+      //   },
+      // ),
     );
   }
 }
