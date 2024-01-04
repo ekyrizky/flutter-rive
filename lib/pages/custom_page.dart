@@ -9,6 +9,7 @@ class CustomPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
+      color: Colors.amber,
       child: Text(
         pageName,
         style: TextStyle(fontSize: 32),
