@@ -10,12 +10,12 @@ class MenuItem {
 
   static List<MenuItem> menuItems = [
     MenuItem(
-      title: "Chat",
-      riveIcon: TabItem(stateMachine: "CHAT_Interactivity", artboart: "CHAT"),
+      title: "Home",
+      riveIcon: TabItem(stateMachine: "HOME_Interactivity", artboart: "HOME"),
     ),
     MenuItem(
-      title: "Bell",
-      riveIcon: TabItem(stateMachine: "BELL_Interactivity", artboart: "BELL"),
+      title: "Chat",
+      riveIcon: TabItem(stateMachine: "CHAT_Interactivity", artboart: "CHAT"),
     ),
     MenuItem(
       title: "Search",

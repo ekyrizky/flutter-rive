@@ -3,10 +3,19 @@ import 'package:flutter_rive/components/menu_row.dart';
 import 'package:flutter_rive/models/menu_item.dart';
 
 class MenuSection extends StatelessWidget {
-  const MenuSection({super.key, required this.title, required this.menuItems});
+  const MenuSection({
+    super.key,
+    required this.title,
+    required this.menuItems,
+    this.selectedMenu = "Home",
+    this.onMenuPress,
+  });
 
   final String title;
   final List<MenuItem> menuItems;
+  final String selectedMenu;
+  final Function(MenuItem menu)? onMenuPress;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -34,7 +43,11 @@ class MenuSection extends StatelessWidget {
                 indent: 16,
                 endIndent: 16,
               ),
-              MenuRow(menuItem: menu)
+              MenuRow(
+                menuItem: menu,
+                selectedMenu: selectedMenu,
+                onMenuPress: () => onMenuPress!(menu),
+              )
             ]
           ]),
         )

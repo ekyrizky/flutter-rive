@@ -12,6 +12,13 @@ class SideMenu extends StatefulWidget {
 class _SideMenuState extends State<SideMenu> {
   final List<MenuItem> _menuIcons = MenuItem.menuItems;
   final List<MenuItem> _menuIcons2 = MenuItem.menuItems2;
+  String _selectedMenu = MenuItem.menuItems[0].title;
+
+  void onMenuPress(MenuItem menu) {
+    setState(() {
+      _selectedMenu = menu.title;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,8 +71,18 @@ class _SideMenuState extends State<SideMenu> {
               ],
             ),
           ),
-          MenuSection(title: "MENU", menuItems: _menuIcons),
-          MenuSection(title: "SETTINGS", menuItems: _menuIcons2)
+          MenuSection(
+            title: "MENU",
+            menuItems: _menuIcons,
+            selectedMenu: _selectedMenu,
+            onMenuPress: onMenuPress,
+          ),
+          MenuSection(
+            title: "SETTINGS",
+            menuItems: _menuIcons2,
+            selectedMenu: _selectedMenu,
+            onMenuPress: onMenuPress,
+          )
         ],
       ),
     );
