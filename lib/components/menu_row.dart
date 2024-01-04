@@ -40,7 +40,7 @@ class MenuRow extends StatelessWidget {
           width: selectedMenu == menuItem.title ? 280 - 16 : 0,
           height: 56,
           decoration: BoxDecoration(
-            color: Colors.blue,
+            color: Colors.amber,
             borderRadius: BorderRadius.circular(10),
           ),
         ),

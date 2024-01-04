@@ -25,7 +25,7 @@ class _SideMenuState extends State<SideMenu> {
     return Container(
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       decoration: BoxDecoration(
-        color: Colors.blue.withOpacity(0.8),
+        color: Colors.blue,
         borderRadius: BorderRadius.circular(45),
       ),
       constraints: BoxConstraints(maxWidth: 280),
