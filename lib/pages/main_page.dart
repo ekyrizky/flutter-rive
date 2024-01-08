@@ -3,6 +3,7 @@ import 'package:flutter/physics.dart';
 import 'package:flutter_rive/navigation/custom_tab_bar.dart';
 import 'package:flutter_rive/navigation/side_menu.dart';
 import 'package:flutter_rive/pages/custom_page.dart';
+import 'package:flutter_rive/pages/profile_page.dart';
 import 'package:rive/rive.dart';
 import 'dart:math' as math;
 
@@ -17,7 +18,11 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin {
   Widget _tabBody = Container();
   late SMIBool _menu;
   late AnimationController? _animationController;
+  late AnimationController? _profileController;
   late Animation<double> _sidebarAnim;
+  late Animation<double> _profileAnim;
+  bool _showProfile = false;
+
   final springDesc = const SpringDescription(
     mass: 0.1,
     stiffness: 40,
@@ -38,8 +43,17 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin {
       upperBound: 1,
       vsync: this,
     );
+    _profileController = AnimationController(
+      duration: Duration(milliseconds: 350),
+      upperBound: 1,
+      vsync: this,
+    );
     _sidebarAnim = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
       parent: _animationController!,
+      curve: Curves.linear,
+    ));
+    _profileAnim = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
+      parent: _profileController!,
       curve: Curves.linear,
     ));
     _tabBody = _screens.first;
@@ -49,6 +63,7 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin {
   @override
   void dispose() {
     _animationController?.dispose();
+    _profileController?.dispose();
     super.dispose();
   }
 
@@ -68,6 +83,22 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin {
       _animationController?.reverse();
     }
     _menu.change(!_menu.value);
+  }
+
+  void _presentProfile(bool show) {
+    if (show) {
+      setState(() {
+        _showProfile = true;
+      });
+      final springAnim = SpringSimulation(springDesc, 0, 1, 0);
+      _profileController?.animateWith(springAnim);
+    } else {
+      _profileController?.reverse().whenComplete(() => {
+            setState(() {
+              _showProfile = false;
+            })
+          });
+    }
   }
 
   @override
@@ -118,6 +149,30 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin {
           AnimatedBuilder(
             animation: _sidebarAnim,
             builder: (context, child) {
+              return Positioned(
+                  top: MediaQuery.of(context).padding.top,
+                  right: (_sidebarAnim.value * -100) + 16,
+                  child: child!);
+            },
+            child: GestureDetector(
+              onTap: () {
+                _presentProfile(true);
+              },
+              child: Container(
+                width: 32,
+                height: 32,
+                margin: EdgeInsets.only(top: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Icon(Icons.person_outline),
+              ),
+            ),
+          ),
+          AnimatedBuilder(
+            animation: _sidebarAnim,
+            builder: (context, child) {
               return SafeArea(
                 child: Row(
                   children: [
@@ -141,14 +196,51 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin {
                 ),
               ),
             ),
-          )
+          ),
+          if (_showProfile)
+            AnimatedBuilder(
+              animation: _profileAnim,
+              builder: (context, child) {
+                return Transform.translate(
+                  offset: Offset(
+                    0,
+                    -(MediaQuery.of(context).size.height +
+                            MediaQuery.of(context).padding.bottom) *
+                        (1 - _profileAnim.value),
+                  ),
+                  child: child!,
+                );
+              },
+              child: SafeArea(
+                top: false,
+                maintainBottomViewPadding: true,
+                child: Container(
+                  transform: Matrix4.translationValues(
+                      0, -(MediaQuery.of(context).padding.bottom + 18), 0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: ProfilePage(
+                    closeProfile: () {
+                      _presentProfile(false);
+                    },
+                  ),
+                ),
+              ),
+            )
         ],
       ),
       bottomNavigationBar: AnimatedBuilder(
-        animation: _sidebarAnim,
+        animation: !_showProfile ? _sidebarAnim : _profileAnim,
         builder: (context, child) {
           return Transform.translate(
-            offset: Offset(0, _sidebarAnim.value * 300),
+            offset: Offset(
+              0,
+              !_showProfile
+                  ? _sidebarAnim.value * 300
+                  : _profileAnim.value * 200,
+            ),
             child: child,
           );
         },
