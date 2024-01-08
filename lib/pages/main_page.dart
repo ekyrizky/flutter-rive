@@ -108,9 +108,11 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin {
       body: Stack(
         children: [
           Positioned(
-              child: Container(
-            color: Colors.blue,
-          )),
+            child: GestureDetector(
+              onTap: onMenuPress,
+              child: Container(color: Colors.blue),
+            ),
+          ),
           AnimatedBuilder(
             animation: _sidebarAnim,
             builder: (context, child) {
@@ -124,7 +126,11 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin {
             },
             child: FadeTransition(
               opacity: _sidebarAnim,
-              child: SideMenu(),
+              child: SideMenu(
+                onMenuPressed: () {
+                  onMenuPress();
+                },
+              ),
             ),
           ),
           AnimatedBuilder(
@@ -144,7 +150,14 @@ class _HomePageState extends State<MainPage> with TickerProviderStateMixin {
                 ),
               );
             },
-            child: _tabBody,
+            child: GestureDetector(
+              onTap: () {
+                if (!_menu.value) {
+                  onMenuPress();
+                }
+              },
+              child: _tabBody,
+            ),
           ),
           AnimatedBuilder(
             animation: _sidebarAnim,

@@ -3,7 +3,8 @@ import 'package:flutter_rive/components/menu_section.dart';
 import 'package:flutter_rive/models/menu_item.dart';
 
 class SideMenu extends StatefulWidget {
-  const SideMenu({super.key});
+  const SideMenu({super.key, this.onMenuPressed});
+  final Function? onMenuPressed;
 
   @override
   State<SideMenu> createState() => _SideMenuState();
@@ -16,6 +17,7 @@ class _SideMenuState extends State<SideMenu> {
 
   void onMenuPress(MenuItem menu) {
     setState(() {
+      widget.onMenuPressed!();
       _selectedMenu = menu.title;
     });
   }
